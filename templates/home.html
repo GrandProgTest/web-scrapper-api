@@ -6,10 +6,17 @@
     <title>Search Firms</title>
 </head>
 <body>
-    <h1>Search for Debarred Firms</h1>
+    <h1>Search for Debarred Firms (World Bank)</h1>
     <form action="{{ url_for('search') }}" method="get">
-        <label for="firm_name">Firm Name:</label>
-        <input type="text" id="firm_name" name="firm_name" required>
+        <label for="firm_name_worldbank">Firm Name:</label>
+        <input type="text" id="firm_name_worldbank" name="firm_name" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <h1>Search for Sanctions (OFAC)</h1>
+    <form action="{{ url_for('search_ofac') }}" method="get">
+        <label for="firm_name_ofac">Firm Name:</label>
+        <input type="text" id="firm_name_ofac" name="firm_name" required>
         <button type="submit">Search</button>
     </form>
 </body>

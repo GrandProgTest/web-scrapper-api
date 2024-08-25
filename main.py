@@ -49,21 +49,59 @@ def extract_table_data(soup):
             data.append(firm_data)
     return data
 
-def print_data(data):
-    for firm in data:
-        for key, value in firm.items():
-            print(f"{key}: {value}")
-        print("-" * 50)
+def search_ofac_sanctions(driver, name):
+    driver.get("https://sanctionssearch.ofac.treas.gov/")
+    time.sleep(2)
 
-def main():
+    search_box = driver.find_element(By.ID, "ctl00_MainContent_txtLastName")
+    search_box.clear()
+    search_box.send_keys(name)
+
+    search_button = driver.find_element(By.ID, "ctl00_MainContent_btnSearch")
+    search_button.click()
+    time.sleep(5)
+
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    return soup
+
+def extract_ofac_table_data(soup):
+    table = soup.find('table', id='gvSearchResults')
+    if not table:
+        print("No se encontró la tabla de resultados.")
+        return []
+
+    rows = table.find_all('tr')
+    data = []
+    for row in rows:
+        columns = row.find_all('td')
+        if len(columns) > 0:
+            result_data = {
+                "Name": columns[0].text.strip(),
+                "Address": columns[1].text.strip(),
+                "Type": columns[2].text.strip(),
+                "Programs": columns[3].text.strip(),
+                "List": columns[4].text.strip(),
+                "Score": columns[5].text.strip()
+            }
+            data.append(result_data)
+    return data
+
+def main(search_type, firm_name=None):
     chromedriver_path = './chromedriver-win64/chromedriver.exe'
-    url = "https://projects.worldbank.org/en/projects-operations/procurement/debarred-firms"
-    
     driver = setup_driver(chromedriver_path)
-    soup = fetch_page(driver, url)
-    data = extract_table_data(soup)
-    print_data(data)
-    driver.quit()
+    
+    if search_type == "worldbank":
+        url = "https://projects.worldbank.org/en/projects-operations/procurement/debarred-firms"
+        soup = fetch_page(driver, url)
+        data = extract_table_data(soup)
+        
+    elif search_type == "ofac" and firm_name:
+        soup = search_ofac_sanctions(driver, firm_name)
+        data = extract_ofac_table_data(soup)
+    
+    else:
+        driver.quit()
+        return []
 
-if __name__ == "__main__":
-    main()
+    driver.quit()
+    return data
