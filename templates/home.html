@@ -19,5 +19,19 @@
         <input type="text" id="firm_name_ofac" name="firm_name" required>
         <button type="submit">Search</button>
     </form>
+
+    <h1>Search for Debarred Firms (World Bank) - More Open</h1>
+    <form action="{{ url_for('search_bank_more_open') }}" method="get">
+        <label for="firm_name_bank_more_open">Firm Name:</label>
+        <input type="text" id="firm_name_bank_more_open" name="firm_name" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <h1>Search for Sanctions (OFAC) - More Open</h1>
+    <form action="{{ url_for('search_ofac_more_open') }}" method="get">
+        <label for="firm_name_ofac_more_open">Firm Name:</label>
+        <input type="text" id="firm_name_ofac_more_open" name="firm_name" required>
+        <button type="submit">Search</button>
+    </form>
 </body>
 </html>
